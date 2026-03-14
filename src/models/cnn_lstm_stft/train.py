@@ -8,7 +8,8 @@ import tensorflow as tf
 from tensorflow.keras.optimizers import SGD
 
 from src.models.cnn_lstm_stft.model import build_cnn_model
-
+from sklearn.utils.class_weight import compute_class_weight
+from tensorflow.keras.callbacks import EarlyStopping
 
 # paths
 FEATURE_PATH = "data/processed/features_stft.npy"
@@ -16,6 +17,12 @@ LABEL_PATH = "data/processed/labels_stft.npy"
 
 MODEL_PATH = "outputs/models/cnn_lstm_stft/cnn_model.keras"
 
+
+early_stop = EarlyStopping(
+    monitor="val_loss",
+    patience=10,
+    restore_best_weights=True
+)
 
 def load_dataset():
 
@@ -39,6 +46,13 @@ def train():
         stratify=y
     )
 
+    class_weights = compute_class_weight(
+        class_weight="balanced",
+        classes=np.unique(y_train),
+        y=y_train
+    )
+    class_weights = dict(enumerate(class_weights))
+
     model = build_cnn_model()
 
     optimizer = SGD(
@@ -60,7 +74,9 @@ def train():
         y_train,
         validation_data=(X_test, y_test),
         epochs=50,
-        batch_size=32
+        batch_size=32,
+        class_weight=class_weights,
+        callbacks=[early_stop]
     )
 
     # evaluate
