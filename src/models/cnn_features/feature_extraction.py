@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 
 METADATA = "data/processed/metadata.csv"
-OUTPUT = "data/processed/features.csv"
+OUTPUT = "data/processed/features_cnn_features.csv"
 
 
 def noise(data):

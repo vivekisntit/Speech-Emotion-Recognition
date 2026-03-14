@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import os
 
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.model_selection import train_test_split
@@ -13,7 +14,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-FEATURES = "data/processed/features.csv"
+FEATURES = "data/processed/features_cnn_features.csv"
 
 
 def load_data():
@@ -122,6 +123,12 @@ def main():
 
     score = model.evaluate(x_test, y_test)
     print("Test Accuracy:", score[1] * 100)
+
+    os.makedirs("outputs/models/cnn_features", exist_ok=True)
+
+    model.save("outputs/models/cnn_features/cnn_features_baseline.keras")
+
+    print("Model saved to outputs/models/cnn_features/")
 
 
 if __name__ == "__main__":
