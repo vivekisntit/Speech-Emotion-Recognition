@@ -1,33 +1,20 @@
 import numpy as np
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.model_selection import train_test_split
-
+from keras.callbacks import EarlyStopping
 from keras.callbacks import ReduceLROnPlateau
 
 from model import build_model
 
-def spec_augment(spec):
-
-    spec = spec.copy()
-
-    num_mel = spec.shape[0]
-    num_time = spec.shape[1]
-
-    # frequency mask
-    f = np.random.randint(0, 15)
-    f0 = np.random.randint(0, num_mel - f)
-    spec[f0:f0+f, :] = 0
-
-    # time mask
-    t = np.random.randint(0, 20)
-    t0 = np.random.randint(0, num_time - t)
-    spec[:, t0:t0+t] = 0
-
-    return spec
 
 X_PATH = "data/processed/features_logmel.npy"
 Y_PATH = "data/processed/labels_logmel.npy"
 
+early_stop = EarlyStopping(
+    monitor="val_loss",
+    patience=6,
+    restore_best_weights=True
+)
 
 def main():
 
@@ -45,11 +32,6 @@ def main():
         test_size=0.25,
         random_state=0
     )
-    
-    # Apply SpecAugment only to training samples
-    for i in range(len(x_train)):
-        if np.random.rand() < 0.5:
-            x_train[i] = spec_augment(x_train[i])
 
     model = build_model(
         input_shape=X.shape[1:],
@@ -69,7 +51,7 @@ def main():
         batch_size=32,
         epochs=40,
         validation_data=(x_test, y_test),
-        callbacks=[rlrp]
+        callbacks=[rlrp, early_stop]
     )
 
     model.save("outputs/models/logmel_cnn/logmel_cnn_v1.keras")
