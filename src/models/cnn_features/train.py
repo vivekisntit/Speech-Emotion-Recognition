@@ -126,9 +126,9 @@ def main():
 
     os.makedirs("outputs/models/cnn_features", exist_ok=True)
 
-    model.save("outputs/models/cnn_features/cnn_features_baseline.keras")
+    model.save("outputs/models/cnn_features/model_cnn_features.keras")
 
-    print("Model saved to outputs/models/cnn_features/")
+    print("Model saved to outputs/model_models/cnn_features/")
 
 
 if __name__ == "__main__":

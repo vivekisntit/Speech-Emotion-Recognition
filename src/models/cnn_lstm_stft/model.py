@@ -1,5 +1,6 @@
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import GlobalAveragePooling2D
 from tensorflow.keras.layers import BatchNormalization
 from tensorflow.keras.layers import (
     Conv2D,
@@ -20,24 +21,21 @@ def build_cnn_model():
 
     model = Sequential([
 
-        Conv2D(64, (3,3), activation="relu", input_shape=(IMG_SIZE, IMG_SIZE, 1)),
-        BatchNormalization(),        
+        Conv2D(32, (3,3), activation="relu", input_shape=(IMG_SIZE, IMG_SIZE, 1)),
         MaxPooling2D((2,2)),
 
-        Conv2D(128, (3,3), activation="relu"),
-        BatchNormalization(),
+        Conv2D(64, (3,3), activation="relu"),
         MaxPooling2D((2,2)),
 
         Flatten(),
 
-        Dense(1024, activation="relu"),
-        Dropout(0.25),
+        Dense(256, activation="relu"),
+        Dropout(0.3),
 
         Dense(NUM_CLASSES, activation="softmax")
     ])
 
     return model
-
 
 def build_lstm_model():
 

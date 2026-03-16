@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, accuracy_score
 
 import tensorflow as tf
-from tensorflow.keras.optimizers import SGD
+from tensorflow.keras.optimizers import Adam
 
 from src.models.cnn_lstm_stft.model import build_cnn_model
 from sklearn.utils.class_weight import compute_class_weight
@@ -55,11 +55,7 @@ def train():
 
     model = build_cnn_model()
 
-    optimizer = SGD(
-    learning_rate=0.001,
-    momentum=0.8,
-    clipnorm=1.0
-)
+    optimizer = Adam(learning_rate=0.0005)
 
     model.compile(
         optimizer=optimizer,
@@ -74,7 +70,8 @@ def train():
         y_train,
         validation_data=(X_test, y_test),
         epochs=50,
-        batch_size=32,
+        batch_size=16,
+        shuffle=True,
         class_weight=class_weights,
         callbacks=[early_stop]
     )

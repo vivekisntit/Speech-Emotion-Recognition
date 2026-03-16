@@ -20,12 +20,12 @@ def spec_augment(spec):
     num_time = spec.shape[1]
 
     # frequency mask
-    f = np.random.randint(5, 25)
+    f = np.random.randint(0, 15)
     f0 = np.random.randint(0, num_mel - f)
     spec[f0:f0+f, :] = 0
 
     # time mask
-    t = np.random.randint(10, 40)
+    t = np.random.randint(0, 20)
     t0 = np.random.randint(0, num_time - t)
     spec[:, t0:t0+t] = 0
 
@@ -48,7 +48,7 @@ def main():
         classes=classes,
         y=Y
     )
-    weights = weights ** 0.5
+
     class_weights = dict(zip(range(len(classes)), weights))
 
     encoder = OneHotEncoder()
@@ -74,7 +74,7 @@ def main():
     )
 
     rlrp = ReduceLROnPlateau(
-        monitor="val_loss",
+        monitor="loss",
         factor=0.4,
         patience=2,
         min_lr=1e-7

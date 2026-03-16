@@ -34,7 +34,20 @@ def extract_logmel(path):
 
     logmel = librosa.power_to_db(mel)
 
-    return logmel
+    # delta features
+    delta = librosa.feature.delta(logmel)
+    delta2 = librosa.feature.delta(logmel, order=2)
+
+    # RMS energy feature
+    rms = librosa.feature.rms(y=signal)
+
+    # expand RMS to match mel dimensions
+    rms = np.repeat(rms, logmel.shape[0], axis=0)
+
+    # stack features as channels
+    spec = np.stack([logmel, delta, delta2, rms], axis=-1)
+
+    return spec
 
 
 def main():
