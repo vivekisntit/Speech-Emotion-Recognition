@@ -2,16 +2,10 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
-
 venv/
 .env/
-
 data/raw/
 data/processed/
-
-outputs/models/
 outputs/logs/
-
 .ipynb_checkpoints/
-
 .DS_Store
