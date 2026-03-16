@@ -12,7 +12,7 @@ Y_PATH = "data/processed/labels_logmel.npy"
 
 early_stop = EarlyStopping(
     monitor="val_loss",
-    patience=6,
+    patience=8,
     restore_best_weights=True
 )
 
@@ -54,7 +54,7 @@ def main():
         callbacks=[rlrp, early_stop]
     )
 
-    model.save("outputs/models/logmel_cnn/logmel_cnn_v1.keras")
+    model.save("outputs/models/logmel_cnn/model_logmel_cnn.keras")
 
 
 if __name__ == "__main__":
