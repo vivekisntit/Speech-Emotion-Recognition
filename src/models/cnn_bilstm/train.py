@@ -20,19 +20,19 @@ def spec_augment(spec):
     num_time = spec.shape[1]
 
     # frequency mask
-    f = np.random.randint(5, 25)
+    f = np.random.randint(0, 15)
     f0 = np.random.randint(0, num_mel - f)
     spec[f0:f0+f, :] = 0
 
     # time mask
-    t = np.random.randint(10, 40)
+    t = np.random.randint(0, 20)
     t0 = np.random.randint(0, num_time - t)
     spec[:, t0:t0+t] = 0
 
     return spec
 
-X_PATH = "data/processed/features_logmel.npy"
-Y_PATH = "data/processed/labels_logmel.npy"
+X_PATH = "data/processed/features_cnn_bilstm.npy"
+Y_PATH = "data/processed/labels_cnn_bilstm.npy"
 
 
 def main():
@@ -48,7 +48,7 @@ def main():
         classes=classes,
         y=Y
     )
-    weights = weights ** 0.5
+
     class_weights = dict(zip(range(len(classes)), weights))
 
     encoder = OneHotEncoder()
@@ -62,7 +62,7 @@ def main():
         test_size=0.25,
         random_state=0
     )
-    
+
     # Apply SpecAugment only to training samples
     for i in range(len(x_train)):
         if np.random.rand() < 0.5:
@@ -74,7 +74,7 @@ def main():
     )
 
     rlrp = ReduceLROnPlateau(
-        monitor="val_loss",
+        monitor="loss",
         factor=0.4,
         patience=2,
         min_lr=1e-7
@@ -89,9 +89,7 @@ def main():
         callbacks=[rlrp, early_stop],
         class_weight=class_weights
     )
-
-    model.save("outputs/models/logmel_cnn/logmel_cnn_v1.keras")
-
+    model.save("outputs/models/cnn_bilstm/model_cnn_bilstm.keras")
 
 if __name__ == "__main__":
     main()

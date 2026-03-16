@@ -5,8 +5,8 @@ from tqdm import tqdm
 
 METADATA = "data/processed/metadata.csv"
 
-FEATURE_OUT = "data/processed/features_logmel.npy"
-LABEL_OUT = "data/processed/labels_logmel.npy"
+FEATURE_OUT = "data/processed/features_cnn_bilstm.npy"
+LABEL_OUT = "data/processed/labels_cnn_bilstm.npy"
 
 SR = 22050
 DURATION = 4
@@ -34,20 +34,7 @@ def extract_logmel(path):
 
     logmel = librosa.power_to_db(mel)
 
-    # delta features
-    delta = librosa.feature.delta(logmel)
-    delta2 = librosa.feature.delta(logmel, order=2)
-
-    # RMS energy feature
-    rms = librosa.feature.rms(y=signal)
-
-    # expand RMS to match mel dimensions
-    rms = np.repeat(rms, logmel.shape[0], axis=0)
-
-    # stack features as channels
-    spec = np.stack([logmel, delta, delta2, rms], axis=-1)
-
-    return spec
+    return logmel
 
 
 def main():

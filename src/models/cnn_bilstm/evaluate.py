@@ -17,32 +17,26 @@ import matplotlib.pyplot as plt
 
 from keras.models import load_model
 
-# CHANGE THESE WHEN EVALUATING DIFFERENT MODELS
-MODEL_PATH = "outputs/models/logmel_cnn/logmel_cnn_v1.keras"
-FEATURES_PATH = "data/processed/features_logmel.npy"
-LABELS_PATH = "data/processed/labels_logmel.npy"
+MODEL_PATH = "outputs/models/cnn_bilstm/model_cnn_bilstm.keras"
+FEATURES_PATH = "data/processed/features_cnn_bilstm.npy"
+LABELS_PATH = "data/processed/labels_cnn_bilstm.npy"
+
 
 def load_data():
-
     if FEATURES_PATH.endswith(".npy"):
-
         X = np.load(FEATURES_PATH)
         Y = np.load(LABELS_PATH)
 
     else:
-
         df = pd.read_csv(FEATURES_PATH)
-
         X = df.iloc[:, :-1].values
         Y = df.iloc[:, -1].values
 
     encoder = OneHotEncoder()
     Y_encoded = encoder.fit_transform(Y.reshape(-1,1)).toarray()
-
     return X, Y, Y_encoded, encoder
 
 def prepare_data(X, Y_encoded):
-
     x_train, x_test, y_train, y_test = train_test_split(
         X,
         Y_encoded,
@@ -50,18 +44,14 @@ def prepare_data(X, Y_encoded):
         random_state=0,
         shuffle=True
     )
-
-    # spectrogram CNN expects channel dimension
     x_train = x_train[..., np.newaxis]
     x_test = x_test[..., np.newaxis]
-
     return x_test, y_test
 
 def evaluate():
-
     print("Loading model...")
     model = load_model(MODEL_PATH)
-
+    
     print("Loading features...")
     X, Y, Y_encoded, encoder = load_data()
 
